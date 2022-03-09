@@ -9,16 +9,6 @@ from sklearn.metrics import precision_score, recall_score, fbeta_score, accuracy
 !pip install scikit-optimize
 from skopt import BayesSearchCV
 
-def one_hot_encode(data, drop_columns=[]):
-    _input = data.copy()
-    output = _input.drop(columns=[x for x in _input.columns if x in drop_columns])
-    cat_features = output.select_dtypes(include=['object']).columns.tolist()
-    encoded_columns = pd.get_dummies(_input[cat_features], drop_first=True)
-    print('Number of categorical columns one-hot-encoded: {:.0f}'.format(len(cat_features)))
-
-    output = pd.concat([output.drop(cat_features, axis=1), encoded_columns], axis=1)
-    return output
-
 def logit_classifier(X_train, X_test, y_train, y_test, weight=0.5, random_seed=1234):
     logit = sm.Logit(y_train, X_train).fit()
     logit_preds = [1 if x>=weight else 0 for x in logit.predict(X_test)]
@@ -40,11 +30,14 @@ def RF_classifier(X_train, X_test, y_train, y_test, cv, dict_param={'criterion':
     dict_output = {'Model': 'Random Forest', 'Preds': RF_preds, 'Estimator': RF.best_estimator_}
     return dict_output    
 
+def XGBoost_classifier():
+
+    return 
+
 def evaluate_classifier(list_models, y_test, beta=1, visualize=False):
     if not isinstance(list_models, list):
         list_models = [list_models]
 
-    #y_test = y_test.reset_index(drop=True)
     df_output = pd.DataFrame()
     dict_graph = {'Confusion Matrix': {}, 'ROC': {}}
     for result_model in list_models:
