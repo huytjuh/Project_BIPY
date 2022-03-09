@@ -1,6 +1,6 @@
 ### CLUSTERING ###
 
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, OPTICS
 from sklearn.mixture import GaussianMixture
 from yellowbrick.cluster import KElbowVisualizer
  
@@ -13,9 +13,14 @@ def kmeans_clustering(df, target, n_clusters=(2,10), init='k-means++', metric='d
     df_output['Cluster'] = pd.Categorical(KMeans(kmeans.elbow_value_, init=init, max_iter=max_iter).fit_predict(X))
     return df_output
 
-def hierarchical_clustering():
+def OPTICS_clustering(df, target, min_samples=5, metric='', random_seed=1234):
+    X = df.drop(columns=target)
+    optics = OPTICS(min_samples=int(min_samples)).fit(X)
 
-    return
+    print('OPTICS clustering: Found {:.0f} clusters'.format(optics.labels_.max()-1))
+    df_output = df.copy()
+    df_output['Cluster'] = optics.labels_
+    return df_output
 
 def GMM_clustering(df, target, n_clusters=(2,10), metric='bic', random_seed=1234):
     X = df.drop(columns=target)
@@ -30,7 +35,3 @@ def GMM_clustering(df, target, n_clusters=(2,10), metric='bic', random_seed=1234
     df_output = df.copy()
     df_output['Cluster'] = pd.Categorical(list_labels[k_optimal])
     return df_output
-
-def SOM_clustering():
-
-    return
