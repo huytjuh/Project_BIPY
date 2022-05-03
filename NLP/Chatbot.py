@@ -1,3 +1,6 @@
+def seq2seq():
+   return
+
 def BERT():
    return
 
